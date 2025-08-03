@@ -1,0 +1,1 @@
+export const getLoadablePath = jest.fn().mockReturnValue('/path/to/sqlite-vec.so');

@@ -1,0 +1,41 @@
+# Source files (only include built dist/)
+src/
+tsconfig.json
+jest.config.js
+
+# Development files
+.kiro/
+*.test.ts
+*.test.js
+__tests__/
+__mocks__/
+
+# Examples and demos
+*example*.js
+*example*.db
+comprehensive-example.db
+test_embedding.js
+
+# Model files (too large for npm)
+*.gguf
+*.bin
+*.safetensors
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Development dependencies
+.vscode/
+.idea/
+*.log
+coverage/
+.nyc_output
+
+# Environment files
+.env*
+
+# OS files
+.DS_Store
+Thumbs.db
