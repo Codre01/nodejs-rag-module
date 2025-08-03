@@ -159,7 +159,7 @@ export class PostgreSQLDatabase {
         try {
             const result = await this.pool.query(selectSQL, [ids]);
 
-            return result.rows.map(row => ({
+            return result.rows.map((row: any) => ({
                 id: row.id,
                 title: row.title,
                 content: row.content,
@@ -215,7 +215,7 @@ export class PostgreSQLDatabase {
 
         try {
             const result = await this.pool.query(updateSQL, values);
-            return result.rowCount > 0;
+            return (result.rowCount ?? 0) > 0;
         } catch (error) {
             throw new RAGError(
                 `Failed to update document: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -234,7 +234,7 @@ export class PostgreSQLDatabase {
 
         try {
             const result = await this.pool.query(deleteSQL, [id]);
-            return result.rowCount > 0;
+            return (result.rowCount ?? 0) > 0;
         } catch (error) {
             throw new RAGError(
                 `Failed to delete document: ${error instanceof Error ? error.message : 'Unknown error'}`,

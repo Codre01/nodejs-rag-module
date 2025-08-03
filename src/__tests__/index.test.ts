@@ -87,14 +87,14 @@ describe('RAGModule', () => {
       const invalidRequest = { ...validSaveRequest, text: '' };
 
       await expect(ragModule.save(invalidRequest))
-        .rejects.toThrow(new RAGError('Text cannot be empty', ErrorCodes.INVALID_INPUT));
+        .rejects.toThrow(new RAGError('text cannot be empty', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for whitespace-only text', async () => {
       const invalidRequest = { ...validSaveRequest, text: '   ' };
 
       await expect(ragModule.save(invalidRequest))
-        .rejects.toThrow(new RAGError('Text cannot be empty', ErrorCodes.INVALID_INPUT));
+        .rejects.toThrow(new RAGError('text cannot be empty', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for negative ID', async () => {
@@ -409,14 +409,14 @@ describe('RAGModule', () => {
       const invalidRequest = { text: '' };
 
       await expect(ragModule.embed(invalidRequest))
-        .rejects.toThrow(new RAGError('Text cannot be empty', ErrorCodes.INVALID_INPUT));
+        .rejects.toThrow(new RAGError('text cannot be empty', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for whitespace-only text', async () => {
       const invalidRequest = { text: '   ' };
 
       await expect(ragModule.embed(invalidRequest))
-        .rejects.toThrow(new RAGError('Text cannot be empty', ErrorCodes.INVALID_INPUT));
+        .rejects.toThrow(new RAGError('text cannot be empty', ErrorCodes.INVALID_INPUT));
     });
 
     it('should handle embedding service errors', async () => {
@@ -444,7 +444,7 @@ describe('RAGModule', () => {
       const result = await ragModule.embed(longTextRequest);
 
       expect(result).toEqual(mockVector);
-      expect(mockEmbeddingService.embed).toHaveBeenCalledWith(longText);
+      expect(mockEmbeddingService.embed).toHaveBeenCalledWith(longText.trim());
     });
 
     it('should handle special characters in text', async () => {

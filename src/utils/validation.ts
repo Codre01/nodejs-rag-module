@@ -28,7 +28,7 @@ export class InputValidator {
 
     const trimmedText = text.trim();
     if (trimmedText.length === 0) {
-      throw new RAGError(`${fieldName} cannot be empty or whitespace only`, ErrorCodes.INVALID_INPUT);
+      throw new RAGError(`${fieldName} cannot be empty`, ErrorCodes.INVALID_INPUT);
     }
 
     if (trimmedText.length > this.MAX_TEXT_LENGTH) {
@@ -62,17 +62,11 @@ export class InputValidator {
     }
 
     if (trimmedTableName.length > this.MAX_TABLE_NAME_LENGTH) {
-      throw new RAGError(
-        `Table name exceeds maximum length of ${this.MAX_TABLE_NAME_LENGTH} characters`,
-        ErrorCodes.INVALID_INPUT
-      );
+      throw new RAGError('Invalid table name format', ErrorCodes.INVALID_INPUT);
     }
 
     if (!this.TABLE_NAME_REGEX.test(trimmedTableName)) {
-      throw new RAGError(
-        'Table name must start with a letter and contain only letters, numbers, underscores, and hyphens',
-        ErrorCodes.INVALID_INPUT
-      );
+      throw new RAGError('Invalid table name format', ErrorCodes.INVALID_INPUT);
     }
 
     // Check for SQL reserved words (basic protection)
@@ -104,11 +98,11 @@ export class InputValidator {
     }
 
     if (!Number.isInteger(id)) {
-      throw new RAGError('ID must be an integer', ErrorCodes.INVALID_INPUT);
+      throw new RAGError('ID must be a non-negative integer', ErrorCodes.INVALID_INPUT);
     }
 
     if (id < 0) {
-      throw new RAGError('ID must be non-negative', ErrorCodes.INVALID_INPUT);
+      throw new RAGError('ID must be a non-negative integer', ErrorCodes.INVALID_INPUT);
     }
 
     if (id > Number.MAX_SAFE_INTEGER) {
@@ -130,21 +124,15 @@ export class InputValidator {
     }
 
     if (!Number.isInteger(qty)) {
-      throw new RAGError('Quantity must be an integer', ErrorCodes.INVALID_INPUT);
+      throw new RAGError('Quantity must be a positive integer', ErrorCodes.INVALID_INPUT);
     }
 
     if (qty < this.MIN_SEARCH_QUANTITY) {
-      throw new RAGError(
-        `Quantity must be at least ${this.MIN_SEARCH_QUANTITY}`,
-        ErrorCodes.INVALID_INPUT
-      );
+      throw new RAGError('Quantity must be a positive integer', ErrorCodes.INVALID_INPUT);
     }
 
     if (qty > this.MAX_SEARCH_QUANTITY) {
-      throw new RAGError(
-        `Quantity cannot exceed ${this.MAX_SEARCH_QUANTITY}`,
-        ErrorCodes.INVALID_INPUT
-      );
+      throw new RAGError('Quantity cannot exceed 1000 results', ErrorCodes.INVALID_INPUT);
     }
 
     return qty;

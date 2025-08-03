@@ -36,7 +36,7 @@ describe('SQLiteVectorDatabase', () => {
 
   describe('initialize', () => {
     it('should initialize successfully with valid database path', async () => {
-      mockDb.loadExtension.mockImplementation((path, callback) => {
+      mockDb.loadExtension.mockImplementation((path: any, callback: any) => {
         callback(null);
       });
 
@@ -57,7 +57,7 @@ describe('SQLiteVectorDatabase', () => {
     });
 
     it('should throw RAGError when sqlite-vec extension loading fails', async () => {
-      mockDb.loadExtension.mockImplementation((path, callback) => {
+      mockDb.loadExtension.mockImplementation((path: any, callback: any) => {
         callback(new Error('Extension load failed'));
       });
 
@@ -66,7 +66,7 @@ describe('SQLiteVectorDatabase', () => {
     });
 
     it('should not reinitialize if already initialized with same path', async () => {
-      mockDb.loadExtension.mockImplementation((path, callback) => {
+      mockDb.loadExtension.mockImplementation((path: any, callback: any) => {
         callback(null);
       });
 
@@ -81,26 +81,22 @@ describe('SQLiteVectorDatabase', () => {
 
   describe('createTableIfNotExists', () => {
     beforeEach(async () => {
-      mockDb.loadExtension.mockImplementation((path, callback) => {
+      mockDb.loadExtension.mockImplementation((path: any, callback: any) => {
         callback(null);
       });
       await database.initialize('./test.db');
     });
 
     it('should create table and index successfully', async () => {
-      mockDb.run.mockImplementation((sql, callback) => {
+      mockDb.run.mockImplementation((sql: any, callback: any) => {
         callback(null);
       });
 
       await database.createTableIfNotExists('test_table');
 
-      expect(mockDb.run).toHaveBeenCalledTimes(2); // Table creation + index creation
+      expect(mockDb.run).toHaveBeenCalledTimes(1); // Only table creation
       expect(mockDb.run).toHaveBeenCalledWith(
-        expect.stringContaining('CREATE TABLE IF NOT EXISTS "test_table"'),
-        expect.any(Function)
-      );
-      expect(mockDb.run).toHaveBeenCalledWith(
-        expect.stringContaining('CREATE INDEX IF NOT EXISTS "idx_test_table_vector"'),
+        expect.stringContaining('CREATE VIRTUAL TABLE IF NOT EXISTS "test_table"'),
         expect.any(Function)
       );
     });
@@ -111,7 +107,7 @@ describe('SQLiteVectorDatabase', () => {
     });
 
     it('should throw RAGError when table creation fails', async () => {
-      mockDb.run.mockImplementation((sql, callback) => {
+      mockDb.run.mockImplementation((sql: any, callback: any) => {
         callback(new Error('Table creation failed'));
       });
 
@@ -129,14 +125,14 @@ describe('SQLiteVectorDatabase', () => {
 
   describe('insertVector', () => {
     beforeEach(async () => {
-      mockDb.loadExtension.mockImplementation((path, callback) => {
+      mockDb.loadExtension.mockImplementation((path: any, callback: any) => {
         callback(null);
       });
       await database.initialize('./test.db');
     });
 
     it('should insert vector successfully', async () => {
-      mockDb.run.mockImplementation((sql, params, callback) => {
+      mockDb.run.mockImplementation((sql: any, params: any, callback: any) => {
         callback.call({ changes: 1 }, null);
       });
 
@@ -145,7 +141,7 @@ describe('SQLiteVectorDatabase', () => {
       expect(result).toBe(true);
       expect(mockDb.run).toHaveBeenCalledWith(
         expect.stringContaining('INSERT OR REPLACE INTO "test_table"'),
-        expect.arrayContaining([1, expect.any(Buffer)]),
+        [1, '[0.1,0.2,0.3]'],
         expect.any(Function)
       );
     });
@@ -156,7 +152,7 @@ describe('SQLiteVectorDatabase', () => {
     });
 
     it('should throw RAGError when insertion fails', async () => {
-      mockDb.run.mockImplementation((sql, params, callback) => {
+      mockDb.run.mockImplementation((sql: any, params: any, callback: any) => {
         callback(new Error('Insertion failed'));
       });
 
@@ -167,7 +163,7 @@ describe('SQLiteVectorDatabase', () => {
 
   describe('searchSimilar', () => {
     beforeEach(async () => {
-      mockDb.loadExtension.mockImplementation((path, callback) => {
+      mockDb.loadExtension.mockImplementation((path: any, callback: any) => {
         callback(null);
       });
       await database.initialize('./test.db');
@@ -180,7 +176,7 @@ describe('SQLiteVectorDatabase', () => {
         { id: 2, distance: 0.3 }
       ];
       
-      mockDb.all.mockImplementation((sql, params, callback) => {
+      mockDb.all.mockImplementation((sql: any, params: any, callback: any) => {
         callback(null, mockResults);
       });
 
@@ -189,13 +185,13 @@ describe('SQLiteVectorDatabase', () => {
       expect(result).toEqual([1, 3, 2]);
       expect(mockDb.all).toHaveBeenCalledWith(
         expect.stringContaining('vec_distance_cosine'),
-        expect.arrayContaining([expect.any(Buffer), 3]),
+        ['[0.1,0.2,0.3]', 3],
         expect.any(Function)
       );
     });
 
     it('should return empty array when no results found', async () => {
-      mockDb.all.mockImplementation((sql, params, callback) => {
+      mockDb.all.mockImplementation((sql: any, params: any, callback: any) => {
         callback(null, []);
       });
 
@@ -210,7 +206,7 @@ describe('SQLiteVectorDatabase', () => {
     });
 
     it('should throw RAGError when search fails', async () => {
-      mockDb.all.mockImplementation((sql, params, callback) => {
+      mockDb.all.mockImplementation((sql: any, params: any, callback: any) => {
         callback(new Error('Search failed'));
       });
 
@@ -221,14 +217,14 @@ describe('SQLiteVectorDatabase', () => {
 
   describe('close', () => {
     beforeEach(async () => {
-      mockDb.loadExtension.mockImplementation((path, callback) => {
+      mockDb.loadExtension.mockImplementation((path: any, callback: any) => {
         callback(null);
       });
       await database.initialize('./test.db');
     });
 
     it('should close database successfully', async () => {
-      mockDb.close.mockImplementation((callback) => {
+      mockDb.close.mockImplementation((callback: any) => {
         callback(null);
       });
 
@@ -238,7 +234,7 @@ describe('SQLiteVectorDatabase', () => {
     });
 
     it('should handle close errors gracefully', async () => {
-      mockDb.close.mockImplementation((callback) => {
+      mockDb.close.mockImplementation((callback: any) => {
         callback(new Error('Close failed'));
       });
 

@@ -20,7 +20,7 @@ describe('InputValidator', () => {
 
     it('should throw RAGError for whitespace-only string', () => {
       expect(() => InputValidator.validateText('   '))
-        .toThrow(new RAGError('text cannot be empty or whitespace only', ErrorCodes.INVALID_INPUT));
+        .toThrow(new RAGError('text cannot be empty', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for text exceeding maximum length', () => {
@@ -71,17 +71,17 @@ describe('InputValidator', () => {
     it('should throw RAGError for table name exceeding maximum length', () => {
       const longTableName = 'a'.repeat(65);
       expect(() => InputValidator.validateTableName(longTableName))
-        .toThrow(new RAGError('Table name exceeds maximum length of 64 characters', ErrorCodes.INVALID_INPUT));
+        .toThrow(new RAGError('Invalid table name format', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for table name starting with number', () => {
       expect(() => InputValidator.validateTableName('1invalid'))
-        .toThrow(new RAGError('Table name must start with a letter and contain only letters, numbers, underscores, and hyphens', ErrorCodes.INVALID_INPUT));
+        .toThrow(new RAGError('Invalid table name format', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for table name with invalid characters', () => {
       expect(() => InputValidator.validateTableName('invalid!'))
-        .toThrow(new RAGError('Table name must start with a letter and contain only letters, numbers, underscores, and hyphens', ErrorCodes.INVALID_INPUT));
+        .toThrow(new RAGError('Invalid table name format', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for SQL reserved words', () => {
@@ -111,12 +111,12 @@ describe('InputValidator', () => {
 
     it('should throw RAGError for non-integer input', () => {
       expect(() => InputValidator.validateId(3.14))
-        .toThrow(new RAGError('ID must be an integer', ErrorCodes.INVALID_INPUT));
+        .toThrow(new RAGError('ID must be a non-negative integer', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for negative ID', () => {
       expect(() => InputValidator.validateId(-1))
-        .toThrow(new RAGError('ID must be non-negative', ErrorCodes.INVALID_INPUT));
+        .toThrow(new RAGError('ID must be a non-negative integer', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for ID exceeding maximum safe integer', () => {
@@ -143,17 +143,17 @@ describe('InputValidator', () => {
 
     it('should throw RAGError for non-integer input', () => {
       expect(() => InputValidator.validateSearchQuantity(5.5))
-        .toThrow(new RAGError('Quantity must be an integer', ErrorCodes.INVALID_INPUT));
+        .toThrow(new RAGError('Quantity must be a positive integer', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for quantity less than minimum', () => {
       expect(() => InputValidator.validateSearchQuantity(0))
-        .toThrow(new RAGError('Quantity must be at least 1', ErrorCodes.INVALID_INPUT));
+        .toThrow(new RAGError('Quantity must be a positive integer', ErrorCodes.INVALID_INPUT));
     });
 
     it('should throw RAGError for quantity exceeding maximum', () => {
       expect(() => InputValidator.validateSearchQuantity(1001))
-        .toThrow(new RAGError('Quantity cannot exceed 1000', ErrorCodes.INVALID_INPUT));
+        .toThrow(new RAGError('Quantity cannot exceed 1000 results', ErrorCodes.INVALID_INPUT));
     });
   });
 

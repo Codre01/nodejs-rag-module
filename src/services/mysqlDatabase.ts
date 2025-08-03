@@ -43,9 +43,7 @@ export class MySQLDatabase {
                 user: this.config.user,
                 password: this.config.password,
                 database: this.config.database,
-                connectionLimit: this.config.connectionLimit,
-                acquireTimeout: 60000,
-                idleTimeout: 60000
+                connectionLimit: this.config.connectionLimit
             });
 
             // Test connection

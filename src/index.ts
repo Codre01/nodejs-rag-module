@@ -307,6 +307,9 @@ export class RAGModule {
       this.logger.error('RAG module initialization failed', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
       });
+      if (error instanceof RAGError) {
+        throw error;
+      }
       throw new RAGError(
         `Failed to initialize RAG module: ${error instanceof Error ? error.message : 'Unknown error'}`,
         ErrorCodes.MODEL_LOAD_FAILED,
@@ -352,6 +355,9 @@ export class RAGModule {
       this.logger.error('RAG module close failed', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
       });
+      if (error instanceof RAGError) {
+        throw error;
+      }
       throw new RAGError(
         `Failed to close RAG module: ${error instanceof Error ? error.message : 'Unknown error'}`,
         ErrorCodes.MODEL_LOAD_FAILED,
@@ -374,7 +380,7 @@ export class RAGModule {
 
   private validateSearchRequest(request: SearchRequest): void {
     // Validate and sanitize text
-    request.text = InputValidator.validateText(request.text, 'search text');
+    request.text = InputValidator.validateText(request.text, 'Search text');
     request.text = InputValidator.sanitizeText(request.text);
     
     // Validate and sanitize table name

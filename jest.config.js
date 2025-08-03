@@ -1,10 +1,11 @@
-module.exports = {
-  preset: 'ts-jest',
+export default {
+  preset: 'ts-jest/presets/default-esm',
+  extensionsToTreatAsEsm: ['.ts'],
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.ts$': ['ts-jest', { useESM: true }],
   },
   collectCoverageFrom: [
     'src/**/*.ts',
@@ -18,6 +19,7 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^node-llama-cpp$': '<rootDir>/src/__mocks__/node-llama-cpp.ts',
-    '^sqlite-vec$': '<rootDir>/src/__mocks__/sqlite-vec.ts'
+    '^sqlite-vec$': '<rootDir>/src/__mocks__/sqlite-vec.ts',
+    '^(\\.\\.?\\/.+)\\.js$': '$1'
   }
 };
